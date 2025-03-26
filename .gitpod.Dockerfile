@@ -1,12 +1,46 @@
-FROM mcr.microsoft.com/devcontainers/base:ubuntu-22.04
+FROM ubuntu:18.04
+
+ARG DEBIAN_FRONTEND=noninteractive
+
+RUN apt-get update && apt-get install -y software-properties-common
+RUN add-apt-repository ppa:git-core/ppa -y
+
+RUN apt-get update && apt-get install -y \
+  apt-transport-https \
+  ca-certificates \
+  curl \
+  file \
+  git \
+  gnome-keyring \
+  iproute2 \
+  libfuse2 \
+  libgconf-2-4 \
+  libgdk-pixbuf2.0-0 \
+  libgl1 \
+  libgtk-3.0 \
+  libsecret-1-dev \
+  libkrb5-dev \
+  libssl-dev \
+  libx11-dev \
+  libx11-xcb-dev \
+  libxkbfile-dev \
+  locales \
+  lsb-release \
+  lsof \
+  sudo \
+  wget \
+  xvfb \
+  tzdata \
+  unzip \
+  jq
 
 ### Gitpod user ###
 # '-l': see https://docs.docker.com/develop/develop-images/dockerfile_best-practices/#user
 RUN useradd -l -u 33333 -G sudo -md /home/gitpod -s /bin/bash -p gitpod gitpod \
-    # Remove `use_pty` option and enable passwordless sudo for users in the 'sudo' group
-    && sed -i.bkp -e '/Defaults\tuse_pty/d' -e 's/%sudo\s\+ALL=(ALL\(:ALL\)\?)\s\+ALL/%sudo ALL=NOPASSWD:ALL/g' /etc/sudoers \
-    # To emulate the workspace-session behavior within dazzle build env
-    && mkdir /workspace && chown -hR gitpod:gitpod /workspace
+  # passwordless sudo for users in the 'sudo' group
+  && sed -i.bkp -e 's/%sudo\s\+ALL=(ALL\(:ALL\)\?)\s\+ALL/%sudo ALL=NOPASSWD:ALL/g' /etc/sudoers \
+  # To emulate the workspace-session behavior within dazzle build env
+  && mkdir /workspace && chown -hR gitpod:gitpod /workspace
 
 ENV HOME=/home/gitpod
 WORKDIR $HOME
@@ -17,65 +51,17 @@ RUN { echo && echo "PS1='\[\033[01;32m\]\u\[\033[00m\] \[\033[01;34m\]\w\[\033[0
 USER gitpod
 # use sudo so that user does not get sudo usage info on (the first) login
 RUN sudo echo "Running 'sudo' for Gitpod: success" && \
-    # create .bashrc.d folder and source it in the bashrc
-    mkdir -p /home/gitpod/.bashrc.d && \
-    (echo; echo "for i in \$(ls -A \$HOME/.bashrc.d/); do source \$HOME/.bashrc.d/\$i; done"; echo) >> /home/gitpod/.bashrc && \
-    # create a completions dir for gitpod user
-    mkdir -p /home/gitpod/.local/share/bash-completion/completions
+  # create .bashrc.d folder and source it in the bashrc
+  mkdir -p /home/gitpod/.bashrc.d && \
+  (echo; echo "for i in \$(ls -A \$HOME/.bashrc.d/); do source \$HOME/.bashrc.d/\$i; done"; echo) >> /home/gitpod/.bashrc && \
+  # create a completions dir for gitpod user
+  mkdir -p /home/gitpod/.local/share/bash-completion/completions
 
-ARG KBN_DIR
-
-ENV LANG=en_US.UTF-8 LANGUAGE=en_US:en LC_ALL=en_US.UTF-8
 ENV NVM_DIR=${HOME}/nvm
 ENV NVM_VERSION=v0.39.1
-ENV OPENSSL_PATH=${HOME}/openssl
-# Only specific versions are FIPS certified.
-ENV OPENSSL_VERSION='3.0.8'
-
-RUN sudo apt-get update && sudo apt-get install -y curl git zsh locales docker.io perl make gcc xvfb git-lfs
-
-# configure git-lfs
-RUN git lfs install --system --skip-repo
-
-RUN sudo locale-gen en_US.UTF-8
-
-# Oh My Zsh setup
-RUN if [ ! -d "$HOME/.oh-my-zsh" ]; then \
-  sh -c "$(curl -fsSL https://raw.github.com/ohmyzsh/ohmyzsh/master/tools/install.sh)"; \
-  fi && \
-  ZSH_CUSTOM=${ZSH_CUSTOM:-~/.oh-my-zsh/custom} && \
-  if [ ! -d "$ZSH_CUSTOM/plugins/zsh-autosuggestions" ]; then \
-  git clone https://github.com/zsh-users/zsh-autosuggestions $ZSH_CUSTOM/plugins/zsh-autosuggestions; \
-  fi && \
-  sed -i 's/plugins=(git)/plugins=(git ssh-agent npm docker zsh-autosuggestions)/' /home/gitpod/.zshrc
-
-
-# FIPS setup
-# https://github.com/openssl/openssl/blob/openssl-3.0/README-FIPS.md
-# https://www.openssl.org/docs/man3.0/man7/fips_module.html
-WORKDIR ${HOME}
-
-RUN set -e ; \
-  mkdir -p "${OPENSSL_PATH}"; \
-  curl --retry 8 -S -L -O "https://www.openssl.org/source/openssl-${OPENSSL_VERSION}.tar.gz" ; \
-  curl --retry 8 -S -L -O "https://www.openssl.org/source/openssl-${OPENSSL_VERSION}.tar.gz.sha256" ; \
-  echo "$(cat openssl-${OPENSSL_VERSION}.tar.gz.sha256) openssl-${OPENSSL_VERSION}.tar.gz" | sha256sum -c ; \
-  tar -zxf "openssl-${OPENSSL_VERSION}.tar.gz" ; \
-  rm -rf openssl-${OPENSSL_VERSION}.tar* ; \
-  cd "${OPENSSL_PATH}-${OPENSSL_VERSION}" ; \
-  ./Configure --prefix="${OPENSSL_PATH}" --openssldir="${OPENSSL_PATH}/ssl" --libdir="${OPENSSL_PATH}/lib" shared -Wl,-rpath,${OPENSSL_PATH}/lib enable-fips; \
-  make -j $(nproc) > /dev/null ; \
-  make install > /dev/null ; \
-  rm -rf  "${OPENSSL_PATH}-${OPENSSL_VERSION}" ; \
-  chown -R 33333:33333 "${OPENSSL_PATH}";
-
-WORKDIR ${KBN_DIR}
 
 # Node and NVM setup
 COPY .node-version /tmp/
-
-# Mac will have permissions issues if Node and NVM are installed as root
-USER gitpod
 
 RUN mkdir -p $NVM_DIR && \
   curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/${NVM_VERSION}/install.sh | bash && \
@@ -89,9 +75,13 @@ RUN mkdir -p $NVM_DIR && \
   echo "source $NVM_DIR/nvm.sh" >> ${HOME}/.zshrc  && \
   chown -R 33333:33333 "${HOME}/.npm"
 
-USER root
+# Custom PATH additions
+ENV PATH=$HOME/.local/bin:/usr/games:$PATH
 
-# Reload the env everytime a new shell is opened incase the .env file changed.
-RUN echo "source ${KBN_DIR}/.devcontainer/scripts/env.sh" >> ${HOME}/.bashrc && \
-  echo "source ${KBN_DIR}/.devcontainer/scripts/env.sh" >> ${HOME}/.zshrc
+RUN cd /home/gitpod && \
+  mkdir custom_node && \
+  wget https://unofficial-builds.nodejs.org/download/release/v18.16.1/node-v18.16.1-linux-x64-glibc-217.tar.gz && \
+  tar -xzf node-v18.16.1-linux-x64-glibc-217.tar.gz  -C custom_node --strip-components 1
+
+ENV GP_VSCODE_NODE=/home/gitpod/custom_node/bin/node
 
