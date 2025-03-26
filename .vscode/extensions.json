@@ -1,0 +1,23 @@
+{
+  "recommendations": [
+    "datasert.vscode-texty",
+    "dbaeumer.vscode-eslint",
+    "eamodio.gitlens",
+    "editorconfig.editorconfig",
+    "esbenp.prettier-vscode",
+    "github.vscode-pull-request-github",
+    "gitpod.gitpod-remote-ssh",
+    "lokalise.i18n-ally",
+    "mkhl.shfmt",
+    "ms-azuretools.vscode-docker",
+    "ms-python.debugpy",
+    "ms-python.python",
+    "ms-python.vscode-pylance",
+    "pranayagarwal.vscode-hack",
+    "redhat.vscode-yaml",
+    "styled-components.vscode-styled-components",
+    "stylelint.vscode-stylelint",
+    "sysoev.language-stylus",
+    "timonwong.shellcheck"
+  ]
+}
