@@ -1,0 +1,185 @@
+{
+  "folders": [
+    {
+      "path": "src",
+      "name": "Kibana Core"
+    },
+    {
+      "path": "x-pack",
+      "name": "X-Pack"
+    },
+    {
+      "path": "packages",
+      "name": "Packages"
+    },
+    {
+      "path": "plugins",
+      "name": "Plugins"
+    },
+    {
+      "path": "typings",
+      "name": "Type Definitions"
+    }
+  ],
+  "settings": {
+    /*
+     * Files
+     */
+    "files.exclude": {
+      "**/.babel-loader-cache": true,
+      "**/.git": true,
+      "**/.DS_Store": true,
+      "**/.next": true,
+      "reports": true
+    },
+    // Exclude these from search, even though they are gitignored
+    // https://github.com/microsoft/vscode/issues/26574#issuecomment-819403008
+    "search.exclude": {
+      "**/dist": true,
+      "**/.next": true,
+      "**/node_modules": true
+    },
+
+    /*
+     * All languages
+     */
+    "editor.formatOnSave": true,
+    // Disabling autosave because it interferes with our extensions that run on save. It also causes tests to run too frequently when in watch mode.
+    "files.autoSave": "off",
+
+    /*
+     * Javascript / TypeScript
+     */
+
+    "javascript.preferences.importModuleSpecifier": "non-relative",
+    "typescript.preferences.importModuleSpecifier": "non-relative",
+
+    "typescript.validate.enable": true,
+    "typescript.tsdk": "./node_modules/typescript/lib",
+    "typescript.preferences.quoteStyle": "single",
+
+    // Ensure Jest plugin is using the same config defined in package.json
+    "jest.pathToJest": "yarn test:js",
+    "[yaml]": {
+      "editor.defaultFormatter": "esbenp.prettier-vscode"
+    },
+    "[dockercompose]": {
+      "editor.defaultFormatter": "esbenp.prettier-vscode"
+    },
+    "[json]": {
+      "editor.defaultFormatter": "esbenp.prettier-vscode"
+    },
+    "[jsonc]": {
+      "editor.defaultFormatter": "esbenp.prettier-vscode"
+    },
+    "[javascript]": {
+      "editor.defaultFormatter": "esbenp.prettier-vscode"
+    },
+    "[typescript]": {
+      "editor.defaultFormatter": "esbenp.prettier-vscode",
+      "editor.codeActionsOnSave": {
+        "source.organizeImports": "never" // We use prettier-plugin-organize-imports
+      }
+    },
+    "[typescriptreact]": {
+      "editor.defaultFormatter": "esbenp.prettier-vscode",
+      "editor.codeActionsOnSave": {
+        "source.organizeImports": "never" // We use prettier-plugin-organize-imports
+      }
+    },
+
+    "eslint.validate": ["javascript", "javascriptreact", "typescript", "typescriptreact"],
+
+    /*
+     * Hacklang
+     */
+
+    "hack.useLanguageServer": true,
+    "hack.useHhast": true,
+    "hack.remote.enabled": true,
+    "hack.remote.docker.containerName": "hhvm",
+    "hack.remote.type": "docker",
+
+    "python.formatting.provider": "yapf",
+    "python.globalModuleInstallation": true,
+
+    /*
+     * CSS
+     */
+
+    // avoid auto-completion of : after css property
+    "languageStylus.useSeparator": false,
+    "i18n-ally.localesPaths": ["messages"],
+    "i18n-ally.annotationMaxLength": 255,
+    "i18n-ally.displayLanguage": "en-us",
+    "i18n-ally.editor.preferEditor": true,
+    "i18n-ally.extract.keyMaxLength": 2,
+    "i18n-ally.fullReloadOnChanged": true,
+    "i18n-ally.readonly": true,
+    "i18n-ally.review.enabled": false,
+    "i18n-ally.review.gutters": false,
+    "i18n-ally.ignoredLocales": [],
+    "i18n-ally.keystyle": "nested",
+    "i18n-ally.keepFulfilled": false,
+    "yaml.schemas": {
+      "https://raw.githubusercontent.com/returntocorp/semgrep-interfaces/ca519e525f4eaf8976d524f7c40909442e9293bb/rule_schema_v1.yaml": [
+        ".semgrep.yml"
+      ],
+      "https://json.schemastore.org/circleciconfig": [".circleci/config.yml"],
+      "https://json.schemastore.org/github-workflow": [".github/workflows/*.yml"],
+      "https://json.schemastore.org/npmpackagejsonlintrc": ["npmpackagejsonlint.config.js"]
+    },
+    "eslint.run": "onSave",
+    "eslint.useESLintClass": true,
+    "stylelint.validate": ["css", "less", "postcss", "typescript", "typescriptreact"],
+    "stylelint.customSyntax": "@linaria/postcss-linaria",
+
+    // -sr=Redirect operators will be followed by a space
+    // -ci=Switch cases will be indented
+    // -i2=Indent with 2 spaces
+    // https://github.com/mvdan/sh/blob/e81efe570ffb03dbe59ade0b39de30019a0e8930/cmd/shfmt/shfmt.1.scd
+    "shfmt.executableArgs": ["-sr", "-ci", "-i", "2"],
+    "emeraldwalk.runonsave": {
+      "commands": [
+        {
+          "match": "\\.php$",
+          "cmd": "hackfmt --tabs --in-place ${file}"
+        }
+      ]
+    },
+    // gitpod settings
+    "gitpod.host": "https://gitpod.io",
+    "remote.SSH.remotePlatform": {
+      "*.gitpod.io": "linux"
+    },
+    "remote.SSH.defaultExtensions": ["gitpod.gitpod-remote-ssh"],
+    "git.allowNoVerifyCommit": true,
+    "git.confirmNoVerifyCommit": false,
+    "git.autofetch": true,
+    "redhat.telemetry.enabled": false,
+    "git.confirmSync": false
+  },
+  "extensions": {
+    "recommendations": [
+      "datasert.vscode-texty",
+      "dbaeumer.vscode-eslint",
+      "eamodio.gitlens",
+      "editorconfig.editorconfig",
+      "esbenp.prettier-vscode",
+      "github.vscode-pull-request-github",
+      "gitpod.gitpod-remote-ssh",
+      "lokalise.i18n-ally",
+      "mkhl.shfmt",
+      "ms-azuretools.vscode-docker",
+      "ms-python.debugpy",
+      "ms-python.python",
+      "ms-python.vscode-pylance",
+      "pranayagarwal.vscode-hack",
+      "redhat.vscode-yaml",
+      "styled-components.vscode-styled-components",
+      "stylelint.vscode-stylelint",
+      "sysoev.language-stylus",
+      "timonwong.shellcheck"
+    ]
+  }
+}
