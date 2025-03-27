@@ -7,16 +7,28 @@
       "**/.git": true,
       "**/.DS_Store": true,
       "**/.next": true,
+      "**/node_modules": true,
+      "**/dist": true,
       "reports": true
     },
-    // Exclude these from search, even though they are gitignored
-    // https://github.com/microsoft/vscode/issues/26574#issuecomment-819403008
+    "files.watcherExclude": {
+      "**/node_modules/**": true,
+      "**/.git/**": true,
+      "**/dist/**": true,
+      "**/.cache/**": true,
+      "**/tmp/**": true,
+      "**/logs/**": true,
+      "**/.next/**": true,
+      "**/build/**": true
+    },
     "search.exclude": {
+      "**/node_modules": true,
+      "**/.git": true,
       "**/dist": true,
       "**/.next": true,
-      "**/node_modules": true
+      "**/.cache": true
     },
-  
+
     /*
      * All languages
      */
