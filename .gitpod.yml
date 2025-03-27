@@ -7,8 +7,7 @@ image:
   file: .gitpod.Dockerfile
 
 tasks:
-  - init: yarn install && yarn run build
-    command: yarn run start
+  - init: echo hello
 
 vscode:
   # https://www.gitpod.io/docs/vscode-extensions#where-do-i-find-extensions
