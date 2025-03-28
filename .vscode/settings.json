@@ -16,6 +16,7 @@
       "**/.next": true,
       "**/node_modules": true
     },
+    "typescript.tsserver.watchOptions": {},
   
     /*
      * All languages
